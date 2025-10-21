@@ -1,0 +1,338 @@
+"""
+Nutrition Database
+Contains nutritional information for all detectable food items
+Data sourced from USDA FoodData Central and common food standards
+"""
+
+from typing import Dict, Optional
+
+
+class NutritionDatabase:
+    """
+    Internal database of nutritional values per 100g for all food classes
+    """
+    
+    def __init__(self):
+        # Nutrition database: calories, carbs, protein, fat, fiber per 100g
+        self.database = {
+            # FRUITS
+            "apple": {
+                "calories_per_100g": 52,
+                "carbs_per_100g": 14.0,
+                "protein_per_100g": 0.3,
+                "fat_per_100g": 0.2,
+                "fiber_per_100g": 2.4,
+                "typical_portions": {"small": 150, "medium": 182, "large": 223}
+            },
+            "banana": {
+                "calories_per_100g": 89,
+                "carbs_per_100g": 23.0,
+                "protein_per_100g": 1.1,
+                "fat_per_100g": 0.3,
+                "fiber_per_100g": 2.6,
+                "typical_portions": {"small": 90, "medium": 118, "large": 136}
+            },
+            "orange": {
+                "calories_per_100g": 47,
+                "carbs_per_100g": 12.0,
+                "protein_per_100g": 0.9,
+                "fat_per_100g": 0.1,
+                "fiber_per_100g": 2.4,
+                "typical_portions": {"small": 130, "medium": 180, "large": 225}
+            },
+            "grapes": {
+                "calories_per_100g": 69,
+                "carbs_per_100g": 18.0,
+                "protein_per_100g": 0.7,
+                "fat_per_100g": 0.2,
+                "fiber_per_100g": 0.9,
+                "typical_portions": {"small": 80, "medium": 150, "large": 200}
+            },
+            "strawberries": {
+                "calories_per_100g": 32,
+                "carbs_per_100g": 8.0,
+                "protein_per_100g": 0.7,
+                "fat_per_100g": 0.3,
+                "fiber_per_100g": 2.0,
+                "typical_portions": {"small": 100, "medium": 150, "large": 200}
+            },
+            "watermelon": {
+                "calories_per_100g": 30,
+                "carbs_per_100g": 8.0,
+                "protein_per_100g": 0.6,
+                "fat_per_100g": 0.2,
+                "fiber_per_100g": 0.4,
+                "typical_portions": {"small": 150, "medium": 280, "large": 350}
+            },
+            "avocado": {
+                "calories_per_100g": 160,
+                "carbs_per_100g": 9.0,
+                "protein_per_100g": 2.0,
+                "fat_per_100g": 15.0,
+                "fiber_per_100g": 7.0,
+                "typical_portions": {"small": 100, "medium": 150, "large": 200}
+            },
+            
+            # VEGETABLES
+            "carrot": {
+                "calories_per_100g": 41,
+                "carbs_per_100g": 10.0,
+                "protein_per_100g": 0.9,
+                "fat_per_100g": 0.2,
+                "fiber_per_100g": 2.8,
+                "typical_portions": {"small": 50, "medium": 61, "large": 72}
+            },
+            "broccoli": {
+                "calories_per_100g": 34,
+                "carbs_per_100g": 7.0,
+                "protein_per_100g": 2.8,
+                "fat_per_100g": 0.4,
+                "fiber_per_100g": 2.6,
+                "typical_portions": {"small": 75, "medium": 100, "large": 150}
+            },
+            "tomato": {
+                "calories_per_100g": 18,
+                "carbs_per_100g": 4.0,
+                "protein_per_100g": 0.9,
+                "fat_per_100g": 0.2,
+                "fiber_per_100g": 1.2,
+                "typical_portions": {"small": 100, "medium": 123, "large": 182}
+            },
+            "cucumber": {
+                "calories_per_100g": 15,
+                "carbs_per_100g": 4.0,
+                "protein_per_100g": 0.7,
+                "fat_per_100g": 0.1,
+                "fiber_per_100g": 0.5,
+                "typical_portions": {"small": 150, "medium": 200, "large": 300}
+            },
+            "bell_pepper": {
+                "calories_per_100g": 31,
+                "carbs_per_100g": 6.0,
+                "protein_per_100g": 1.0,
+                "fat_per_100g": 0.3,
+                "fiber_per_100g": 2.1,
+                "typical_portions": {"small": 100, "medium": 150, "large": 200}
+            },
+            "lettuce": {
+                "calories_per_100g": 15,
+                "carbs_per_100g": 3.0,
+                "protein_per_100g": 1.4,
+                "fat_per_100g": 0.2,
+                "fiber_per_100g": 1.3,
+                "typical_portions": {"small": 50, "medium": 85, "large": 100}
+            },
+            
+            # PROTEINS
+            "chicken_breast": {
+                "calories_per_100g": 165,
+                "carbs_per_100g": 0.0,
+                "protein_per_100g": 31.0,
+                "fat_per_100g": 3.6,
+                "fiber_per_100g": 0.0,
+                "typical_portions": {"small": 100, "medium": 150, "large": 200}
+            },
+            "steak": {
+                "calories_per_100g": 271,
+                "carbs_per_100g": 0.0,
+                "protein_per_100g": 25.0,
+                "fat_per_100g": 19.0,
+                "fiber_per_100g": 0.0,
+                "typical_portions": {"small": 100, "medium": 180, "large": 250}
+            },
+            "salmon": {
+                "calories_per_100g": 208,
+                "carbs_per_100g": 0.0,
+                "protein_per_100g": 20.0,
+                "fat_per_100g": 13.0,
+                "fiber_per_100g": 0.0,
+                "typical_portions": {"small": 100, "medium": 150, "large": 200}
+            },
+            "eggs": {
+                "calories_per_100g": 155,
+                "carbs_per_100g": 1.1,
+                "protein_per_100g": 13.0,
+                "fat_per_100g": 11.0,
+                "fiber_per_100g": 0.0,
+                "typical_portions": {"small": 50, "medium": 50, "large": 60}  # per egg
+            },
+            "tofu": {
+                "calories_per_100g": 76,
+                "carbs_per_100g": 1.9,
+                "protein_per_100g": 8.0,
+                "fat_per_100g": 4.8,
+                "fiber_per_100g": 0.3,
+                "typical_portions": {"small": 80, "medium": 120, "large": 150}
+            },
+            "ground_beef": {
+                "calories_per_100g": 250,
+                "carbs_per_100g": 0.0,
+                "protein_per_100g": 26.0,
+                "fat_per_100g": 17.0,
+                "fiber_per_100g": 0.0,
+                "typical_portions": {"small": 100, "medium": 150, "large": 200}
+            },
+            
+            # GRAINS
+            "rice": {
+                "calories_per_100g": 130,
+                "carbs_per_100g": 28.0,
+                "protein_per_100g": 2.7,
+                "fat_per_100g": 0.3,
+                "fiber_per_100g": 0.4,
+                "typical_portions": {"small": 100, "medium": 150, "large": 200}
+            },
+            "pasta": {
+                "calories_per_100g": 131,
+                "carbs_per_100g": 25.0,
+                "protein_per_100g": 5.0,
+                "fat_per_100g": 1.1,
+                "fiber_per_100g": 1.8,
+                "typical_portions": {"small": 100, "medium": 150, "large": 200}
+            },
+            "bread_slice": {
+                "calories_per_100g": 265,
+                "carbs_per_100g": 49.0,
+                "protein_per_100g": 9.0,
+                "fat_per_100g": 3.2,
+                "fiber_per_100g": 2.7,
+                "typical_portions": {"small": 25, "medium": 30, "large": 40}  # per slice
+            },
+            "bagel": {
+                "calories_per_100g": 257,
+                "carbs_per_100g": 50.0,
+                "protein_per_100g": 10.0,
+                "fat_per_100g": 1.7,
+                "fiber_per_100g": 2.3,
+                "typical_portions": {"small": 70, "medium": 90, "large": 110}
+            },
+            "tortilla": {
+                "calories_per_100g": 312,
+                "carbs_per_100g": 51.0,
+                "protein_per_100g": 8.0,
+                "fat_per_100g": 8.0,
+                "fiber_per_100g": 3.0,
+                "typical_portions": {"small": 30, "medium": 45, "large": 60}
+            },
+            "oatmeal": {
+                "calories_per_100g": 68,
+                "carbs_per_100g": 12.0,
+                "protein_per_100g": 2.4,
+                "fat_per_100g": 1.4,
+                "fiber_per_100g": 1.7,
+                "typical_portions": {"small": 150, "medium": 200, "large": 250}
+            },
+            
+            # SNACKS
+            "chips": {
+                "calories_per_100g": 536,
+                "carbs_per_100g": 53.0,
+                "protein_per_100g": 7.0,
+                "fat_per_100g": 34.0,
+                "fiber_per_100g": 4.0,
+                "typical_portions": {"small": 28, "medium": 50, "large": 70}
+            },
+            "cookies": {
+                "calories_per_100g": 502,
+                "carbs_per_100g": 64.0,
+                "protein_per_100g": 5.0,
+                "fat_per_100g": 25.0,
+                "fiber_per_100g": 2.0,
+                "typical_portions": {"small": 25, "medium": 40, "large": 60}
+            },
+            "chocolate_bar": {
+                "calories_per_100g": 546,
+                "carbs_per_100g": 60.0,
+                "protein_per_100g": 8.0,
+                "fat_per_100g": 30.0,
+                "fiber_per_100g": 4.7,
+                "typical_portions": {"small": 30, "medium": 43, "large": 60}
+            },
+            "granola_bar": {
+                "calories_per_100g": 471,
+                "carbs_per_100g": 64.0,
+                "protein_per_100g": 9.7,
+                "fat_per_100g": 20.0,
+                "fiber_per_100g": 5.0,
+                "typical_portions": {"small": 25, "medium": 35, "large": 50}
+            },
+            "pretzels": {
+                "calories_per_100g": 380,
+                "carbs_per_100g": 80.0,
+                "protein_per_100g": 10.0,
+                "fat_per_100g": 3.0,
+                "fiber_per_100g": 3.0,
+                "typical_portions": {"small": 30, "medium": 50, "large": 70}
+            },
+            "popcorn": {
+                "calories_per_100g": 387,
+                "carbs_per_100g": 78.0,
+                "protein_per_100g": 13.0,
+                "fat_per_100g": 4.5,
+                "fiber_per_100g": 15.0,
+                "typical_portions": {"small": 30, "medium": 50, "large": 80}
+            },
+            
+            # DAIRY
+            "yogurt": {
+                "calories_per_100g": 59,
+                "carbs_per_100g": 3.6,
+                "protein_per_100g": 10.0,
+                "fat_per_100g": 0.4,
+                "fiber_per_100g": 0.0,
+                "typical_portions": {"small": 150, "medium": 200, "large": 250}
+            },
+            "cheese": {
+                "calories_per_100g": 402,
+                "carbs_per_100g": 1.3,
+                "protein_per_100g": 25.0,
+                "fat_per_100g": 33.0,
+                "fiber_per_100g": 0.0,
+                "typical_portions": {"small": 28, "medium": 40, "large": 56}
+            },
+            "milk": {
+                "calories_per_100g": 42,
+                "carbs_per_100g": 5.0,
+                "protein_per_100g": 3.4,
+                "fat_per_100g": 1.0,
+                "fiber_per_100g": 0.0,
+                "typical_portions": {"small": 200, "medium": 250, "large": 350}
+            },
+            "protein_shake": {
+                "calories_per_100g": 80,
+                "carbs_per_100g": 5.0,
+                "protein_per_100g": 12.0,
+                "fat_per_100g": 1.5,
+                "fiber_per_100g": 0.5,
+                "typical_portions": {"small": 250, "medium": 350, "large": 500}
+            },
+            
+            # FAST FOOD
+            "burger": {
+                "calories_per_100g": 295,
+                "carbs_per_100g": 24.0,
+                "protein_per_100g": 17.0,
+                "fat_per_100g": 14.0,
+                "fiber_per_100g": 1.5,
+                "typical_portions": {"small": 120, "medium": 180, "large": 250}
+            },
+            "pizza_slice": {
+                "calories_per_100g": 266,
+                "carbs_per_100g": 33.0,
+                "protein_per_100g": 11.0,
+                "fat_per_100g": 10.0,
+                "fiber_per_100g": 2.0,
+                "typical_portions": {"small": 80, "medium": 107, "large": 135}
+            },
+            "hot_dog": {
+                "calories_per_100g": 290,
+                "carbs_per_100g": 24.0,
+                "protein_per_100g": 10.0,
+                "fat_per_100g": 17.0,
+                "fiber_per_100g": 1.0,
+                "typical_portions": {"small": 80, "medium": 100, "large": 130}
+            },
+            "sandwich": {
+                "calories_per_100g": 245,
+                "carbs_per_100g": 28.0,
+                "
