@@ -1,0 +1,200 @@
+models:
+  yolo:
+    weights: "yolov8n.pt"
+    device: "auto"
+    confidence_threshold: 0.4
+    iou_threshold: 0.5
+    max_detections: 150
+    class_map:
+      apple: apple
+      banana: banana
+      orange: orange
+      strawberry: strawberry
+      grapes: grapes
+      watermelon: watermelon
+      pineapple: pineapple
+      avocado: avocado
+      blueberry: blueberry
+      cherry: cherry
+      tomato: tomato
+      carrot: carrot
+      broccoli: broccoli
+      cauliflower: cauliflower
+      cucumber: cucumber
+      lettuce: lettuce
+      spinach: spinach
+      potato: potato
+      sweet_potato: sweet potato
+      corn: corn
+      mushroom: mushroom
+      onion: onion
+      bell_pepper: bell pepper
+      zucchini: zucchini
+      eggplant: eggplant
+      chicken_breast: chicken
+      steak: steak
+      salmon: salmon
+      shrimp: shrimp
+      egg: egg
+      bacon: bacon
+      sausage: sausage
+      burger: hamburger
+      pizza: pizza
+      hot_dog: hot dog
+      sandwich: sandwich
+      taco: taco
+      burrito: burrito
+      sushi: sushi
+      rice: rice
+      pasta: pasta
+      bread: bread
+      bagel: bagel
+      croissant: croissant
+      donut: donut
+      muffin: muffin
+      waffle: waffle
+      pancake: pancake
+      cereal: cereal
+      oatmeal: oatmeal
+      yogurt: yogurt
+      cheese: cheese
+      milk: milk
+      ice_cream: ice cream
+      chocolate: chocolate
+      cookie: cookie
+      brownie: brownie
+      cake_slice: cake
+      chips: chips
+      popcorn: popcorn
+      pretzel: pretzel
+      granola_bar: granola bar
+      protein_bar: energy bar
+      nuts: nuts
+      dried_fruit: dried fruit
+      salad: salad
+      soup: soup
+      french_fries: french fries
+      smoothie: smoothie
+      coffee: cup
+      tea: cup
+      soda_can: can
+      water_bottle: bottle
+      juice_box: juice
+      energy_drink: energy drink
+      beer_bottle: bottle
+      wine_glass: wine glass
+      apple_pie: pie
+      quesadilla: quesadilla
+      dumpling: dumpling
+      burrata: burrata
+      paella: paella
+      ramen: bowl
+      nachos: nachos
+      kebab: kebab
+      falafel: falafel
+      hummus: hummus
+      spring_roll: spring roll
+      steak_tartare: tartar
+      churro: churro
+      macarons: macaron
+  depth:
+    model_type: "DPT_Large"
+    device: "auto"
+detection:
+  reference_classes:
+    soda_can:
+      height_cm: 12.2
+      diameter_cm: 6.6
+    credit_card:
+      height_cm: 5.4
+      width_cm: 8.6
+    hand:
+      height_cm: 18.0
+      width_cm: 9.0
+    smartphone:
+      height_cm: 14.5
+      width_cm: 7.0
+    dinner_plate:
+      diameter_cm: 27.0
+    coin:
+      diameter_cm: 2.4
+portion:
+  default_density_g_per_cm3: 0.65
+  class_density_overrides:
+    apple: 0.60
+    banana: 0.94
+    orange: 0.94
+    grapes: 1.09
+    strawberry: 0.59
+    watermelon: 0.96
+    pineapple: 0.91
+    avocado: 1.04
+    blueberry: 0.71
+    cherry: 0.83
+    tomato: 0.98
+    carrot: 0.64
+    broccoli: 0.35
+    cauliflower: 0.33
+    cucumber: 0.62
+    lettuce: 0.20
+    spinach: 0.16
+    potato: 0.71
+    sweet_potato: 0.74
+    corn: 0.72
+    mushroom: 0.22
+    onion: 0.94
+    bell_pepper: 0.35
+    zucchini: 0.60
+    eggplant: 0.38
+    chicken_breast: 1.05
+    steak: 1.00
+    salmon: 1.08
+    shrimp: 1.05
+    egg: 1.03
+    bacon: 0.95
+    sausage: 0.96
+    burger: 0.80
+    pizza: 0.45
+    hot_dog: 0.95
+    sandwich: 0.70
+    taco: 0.55
+    burrito: 0.75
+    sushi: 0.75
+    rice: 0.85
+    pasta: 0.62
+    bread: 0.27
+    bagel: 0.30
+    croissant: 0.30
+    donut: 0.38
+    muffin: 0.38
+    waffle: 0.45
+    pancake: 0.43
+    cereal: 0.28
+    oatmeal: 0.50
+    yogurt: 1.03
+    cheese: 1.12
+    milk: 1.04
+    ice_cream: 0.56
+    chocolate: 1.10
+    cookie: 0.45
+    brownie: 0.55
+    cake_slice: 0.40
+    chips: 0.30
+    popcorn: 0.05
+    pretzel: 0.42
+    granola_bar: 0.95
+    protein_bar: 1.10
+    nuts: 0.95
+    dried_fruit: 1.14
+    salad: 0.18
+    soup: 1.00
+    french_fries: 0.42
+    smoothie: 1.02
+    coffee: 1.00
+    tea: 1.00
+  fallback_mass_g: 150
+  uncertainty_pct: 25
+runtime:
+  frame_skip: 2
+  batch_size: 1
+  export_csv: false
