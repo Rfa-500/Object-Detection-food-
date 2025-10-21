@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["run_id", "processed_at", "image_path", "detections", "totals", "overall_reliability"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "processed_at": {"type": "string"},
+    "image_path": {"type": "string"},
+    "overall_reliability": {"type": "number", "minimum": 0, "maximum": 1},
+    "totals": {
+      "type": "object",
+      "required": ["calories", "protein_g", "carbs_g", "fat_g", "fiber_g", "sugar_g", "sodium_mg"],
+      "properties": {
+        "calories": {"type": "number"},
+        "protein_g": {"type": "number"},
+        "carbs_g": {"type": "number"},
+        "fat_g": {"type": "number"},
+        "fiber_g": {"type": "number"},
+        "sugar_g": {"type": "number"},
+        "sodium_mg": {"type": "number"}
+      }
+    },
+    "detections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "confidence",
+          "bbox",
+          "portion_mass_g",
+          "portion_uncertainty_pct",
+          "detection_reliability"
+        ],
+        "properties": {
+          "id": {"type": "string"},
+          "label": {"type": "string"},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "detection_reliability": {"type": "number", "minimum": 0, "maximum": 1},
+          "portion_mass_g": {"type": "number", "minimum": 0},
+          "portion_uncertainty_pct": {"type": "number", "minimum": 0},
+          "reference_object": {"type": ["string", "null"]},
+          "scale_cm_per_px": {"type": ["number", "null"]},
+          "nutrition": {
+            "type": ["object", "null"],
+            "properties": {
+              "calories": {"type": "number"},
+              "protein_g": {"type": "number"},
+              "carbs_g": {"type": "number"},
+              "fat_g": {"type": "number"},
+              "fiber_g": {"type": "number"},
+              "sugar_g": {"type": "number"},
+              "sodium_mg": {"type": "number"}
+            }
+          },
+          "bbox": {
+            "type": "object",
+            "required": ["x_min", "y_min", "x_max", "y_max"],
+            "properties": {
+              "x_min": {"type": "integer"},
+              "y_min": {"type": "integer"},
+              "x_max": {"type": "integer"},
+              "y_max": {"type": "integer"}
+            }
+          }
+        }
+      }
+    }
+  }
+}
