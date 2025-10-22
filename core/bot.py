@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Callable, Dict, List, Optional
 
 import cv2
+import numpy as np
 
 from core.config_loader import AppConfig
 from estimation.portion_estimator import PortionEstimate, PortionEstimator
@@ -23,7 +24,7 @@ logger = get_logger(__name__)
 
 @dataclass
 class DetectionResult:
-    """Container keeping together detection, portion and nutrition details."""
+    """Bundle the detection, portion estimate, nutrition and occlusion context."""
 
     detection: Detection
     portion: PortionEstimate
@@ -74,6 +75,7 @@ class FoodDetectionBot:
         self.runtime_opts = self.config.runtime
         self.occlusion_threshold = float(self.runtime_opts.get("occlusion_threshold", 0.35))
         self.occlusion_penalty = float(self.runtime_opts.get("occlusion_penalty", 0.6))
+        self.depth_occlusion_margin = float(self.runtime_opts.get("depth_occlusion_margin", 0.05))
 
     def process_image(
         self,
@@ -125,7 +127,12 @@ class FoodDetectionBot:
             bbox = (det.bbox["x_min"], det.bbox["y_min"], det.bbox["x_max"], det.bbox["y_max"])
             portion_estimate = self.portion_estimator.estimate(det.label, bbox, reference_dets, depth_map)
             nutrition = self.nutrition_db.normalize_quantity(det.label, portion_estimate.mass_g)
-            occlusion_ratio = self._estimate_occlusion(det, detections, image.shape[:2])
+            occlusion_ratio = self._estimate_occlusion(
+                det,
+                detections,
+                image.shape[:2],
+                depth_map,
+            )
             is_occluded = occlusion_ratio >= self.occlusion_threshold
             reliability = self._compute_reliability(
                 det.confidence, portion_estimate.reliability, nutrition, occlusion_ratio
@@ -241,7 +248,11 @@ class FoodDetectionBot:
                 logger.debug("Progress callback raised %s", exc)
 
     def _estimate_occlusion(
-        self, target: Detection, all_detections: List[Detection], image_shape: tuple[int, int]
+        self,
+        target: Detection,
+        all_detections: List[Detection],
+        image_shape: tuple[int, int],
+        depth_map: Optional[np.ndarray],
     ) -> float:
         """Estimate the portion of ``target`` that is occluded by peers or borders."""
 
@@ -251,6 +262,8 @@ class FoodDetectionBot:
             return 0.0
 
         max_overlap = 0.0
+        depth_occlusion = 0.0
+        target_depth = self._average_depth(depth_map, target_box)
         for other in all_detections:
             if other is target:
                 continue
@@ -258,9 +271,18 @@ class FoodDetectionBot:
             if overlap_area <= 0:
                 continue
             max_overlap = max(max_overlap, overlap_area / target_area)
+            if depth_map is None or target_depth is None:
+                continue
+            other_depth = self._average_depth(depth_map, other.bbox)
+            if other_depth is None:
+                continue
+            # A noticeably smaller depth implies that ``other`` sits closer to the
+            # camera and therefore likely occludes ``target`` within the overlap.
+            if other_depth + self.depth_occlusion_margin < target_depth:
+                depth_occlusion = max(depth_occlusion, overlap_area / target_area)
 
         boundary_ratio = self._boundary_occlusion_ratio(target_box, image_shape)
-        return max(max_overlap, boundary_ratio)
+        return max(max_overlap, boundary_ratio, depth_occlusion)
 
     @staticmethod
     def _box_area(bbox: Dict[str, int]) -> float:
@@ -310,3 +332,27 @@ class FoodDetectionBot:
             vertical_clip * (bbox["x_max"] - bbox["x_min"])
         )
         return min(0.9, estimated_loss / max(area, 1.0))
+
+    @staticmethod
+    def _average_depth(depth_map: Optional[np.ndarray], bbox: Dict[str, int]) -> Optional[float]:
+        """Return the mean depth in ``bbox`` or ``None`` if unavailable."""
+
+        if depth_map is None:
+            return None
+        x_min, y_min, x_max, y_max = (
+            max(0, bbox["x_min"]),
+            max(0, bbox["y_min"]),
+            max(0, bbox["x_max"]),
+            max(0, bbox["y_max"]),
+        )
+        if x_max <= x_min or y_max <= y_min:
+            return None
+        region = depth_map[y_min:y_max, x_min:x_max]
+        if region.size == 0:
+            return None
+        # Guard against NaNs from upstream models.
+        with np.errstate(invalid="ignore"):
+            mean_val = float(np.nanmean(region))
+        if np.isnan(mean_val):
+            return None
+        return mean_val

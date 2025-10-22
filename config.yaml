@@ -202,3 +202,4 @@ runtime:
   export_csv: false
   occlusion_threshold: 0.35
   occlusion_penalty: 0.6
+  depth_occlusion_margin: 0.05
